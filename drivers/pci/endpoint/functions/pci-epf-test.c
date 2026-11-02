@@ -197,8 +197,7 @@ static int pci_epf_test_data_transfer(struct pci_epf_test *epf_test,
 
 	reinit_completion(&epf_test->transfer_complete);
 	epf_test->transfer_chan = chan;
-	tx->callback = pci_epf_test_dma_callback;
-	tx->callback_param = epf_test;
+	dmaengine_desc_set_callback(tx, pci_epf_test_dma_callback, NULL, epf_test);
 	epf_test->transfer_cookie = dmaengine_submit(tx);
 
 	ret = dma_submit_error(epf_test->transfer_cookie);
