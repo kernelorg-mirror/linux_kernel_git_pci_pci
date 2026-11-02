@@ -346,8 +346,8 @@ static int pci_epf_mhi_edma_read(struct mhi_ep_cntrl *mhi_cntrl,
 		goto err_unmap;
 	}
 
-	desc->callback = pci_epf_mhi_dma_callback;
-	desc->callback_param = &complete;
+	dmaengine_desc_set_callback(desc, pci_epf_mhi_dma_callback, NULL,
+				    &complete);
 
 	cookie = dmaengine_submit(desc);
 	ret = dma_submit_error(cookie);
@@ -414,8 +414,8 @@ static int pci_epf_mhi_edma_write(struct mhi_ep_cntrl *mhi_cntrl,
 		goto err_unmap;
 	}
 
-	desc->callback = pci_epf_mhi_dma_callback;
-	desc->callback_param = &complete;
+	dmaengine_desc_set_callback(desc, pci_epf_mhi_dma_callback, NULL,
+				    &complete);
 
 	cookie = dmaengine_submit(desc);
 	ret = dma_submit_error(cookie);
@@ -526,8 +526,8 @@ static int pci_epf_mhi_edma_read_async(struct mhi_ep_cntrl *mhi_cntrl,
 	transfer->dir = DMA_FROM_DEVICE;
 	memcpy(&transfer->buf_info, buf_info, sizeof(*buf_info));
 
-	desc->callback = pci_epf_mhi_dma_async_callback;
-	desc->callback_param = transfer;
+	dmaengine_desc_set_callback(desc, pci_epf_mhi_dma_async_callback, NULL,
+				    transfer);
 
 	cookie = dmaengine_submit(desc);
 	ret = dma_submit_error(cookie);
@@ -600,8 +600,8 @@ static int pci_epf_mhi_edma_write_async(struct mhi_ep_cntrl *mhi_cntrl,
 	transfer->dir = DMA_TO_DEVICE;
 	memcpy(&transfer->buf_info, buf_info, sizeof(*buf_info));
 
-	desc->callback = pci_epf_mhi_dma_async_callback;
-	desc->callback_param = transfer;
+	dmaengine_desc_set_callback(desc, pci_epf_mhi_dma_async_callback, NULL,
+				    transfer);
 
 	cookie = dmaengine_submit(desc);
 	ret = dma_submit_error(cookie);
