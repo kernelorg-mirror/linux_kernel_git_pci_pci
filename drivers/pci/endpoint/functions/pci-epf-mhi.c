@@ -646,8 +646,8 @@ static bool pci_epf_mhi_filter(struct dma_chan *chan, void *node)
 	memset(&caps, 0, sizeof(caps));
 	dma_get_slave_caps(chan, &caps);
 
-	return chan->device->dev == filter->dev && filter->dma_mask &
-					caps.directions;
+	return dmaengine_get_provider_device(chan) == filter->dev &&
+	       (filter->dma_mask & caps.directions);
 }
 
 static int pci_epf_mhi_dma_init(struct pci_epf_mhi *epf_mhi)

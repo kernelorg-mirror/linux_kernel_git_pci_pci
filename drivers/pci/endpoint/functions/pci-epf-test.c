@@ -238,8 +238,8 @@ static bool epf_dma_filter_fn(struct dma_chan *chan, void *node)
 	memset(&caps, 0, sizeof(caps));
 	dma_get_slave_caps(chan, &caps);
 
-	return chan->device->dev == filter->dev
-		&& (filter->dma_mask & caps.directions);
+	return dmaengine_get_provider_device(chan) == filter->dev &&
+	       (filter->dma_mask & caps.directions);
 }
 
 /**
