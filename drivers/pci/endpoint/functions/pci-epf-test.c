@@ -371,7 +371,7 @@ static void pci_epf_test_copy(struct pci_epf_test *epf_test,
 	orig_size = copy_size = le32_to_cpu(reg->size);
 
 	if (flags & FLAG_USE_DMA) {
-		if (!dma_has_cap(DMA_MEMCPY, epf_test->dma_chan_tx->device->cap_mask)) {
+		if (!dmaengine_has_cap(epf_test->dma_chan_tx, DMA_MEMCPY)) {
 			dev_err(dev, "DMA controller doesn't support MEMCPY\n");
 			ret = -EINVAL;
 			goto set_status;
