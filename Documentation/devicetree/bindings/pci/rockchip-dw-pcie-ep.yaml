@@ -40,6 +40,8 @@ properties:
       - const: addr_space
       - const: atu
 
+  vpcie3v3-supply: true
+
 required:
   - interrupts
   - interrupt-names
