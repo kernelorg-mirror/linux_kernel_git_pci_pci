@@ -1501,6 +1501,9 @@ static int imx_pcie_host_init(struct dw_pcie_rp *pp)
 
 	imx_setup_phy_mpll(imx_pcie);
 
+	if (imx_pcie->supports_clkreq)
+		pci->l1ss_support = true;
+
 	return 0;
 
 err_phy_off:
