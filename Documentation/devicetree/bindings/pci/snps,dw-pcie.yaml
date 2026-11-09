@@ -106,20 +106,20 @@ properties:
             for new bindings.
           oneOf:
             - description: See native 'dbi' CSR region for details.
-              enum: [ ctrl ]
+              enum: [ ctrl, rc-dbi ]
             - description: See native 'elbi/app' CSR region for details.
               enum: [ apb, mgmt, link, ulreg, appl, controller ]
             - description: See native 'atu' CSR region for details.
               enum: [ atu_dma ]
             - description: Syscon-related CSR regions.
-              enum: [ smu, mpu ]
+              enum: [ smu, mpu, control ]
             - description: Tegra234 aperture
               enum: [ ecam ]
             - description: AMD MDB PCIe SLCR region
               const: slcr
     allOf:
       - contains:
-          enum: [ dbi, ctrl ]
+          enum: [ dbi, ctrl, rc-dbi ]
       - contains:
           const: config
 
