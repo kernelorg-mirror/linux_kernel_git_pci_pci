@@ -1718,6 +1718,15 @@ static void set_pcie_cxl(struct pci_dev *dev)
 		return;
 
 	/*
+	 * A CXL device exposes its Flex Bus Port DVSEC through Function 0
+	 * (CXL r4.0, sec 8.1.8 "PCIe DVSEC for Flex Bus Port"), so a VF has
+	 * none. Its upstream bridges are the PF's, which were updated when
+	 * the PF was added.
+	 */
+	if (dev->is_virtfn)
+		return;
+
+	/*
 	 * Update parent's CXL state because alternate protocol training
 	 * may have changed
 	 */
