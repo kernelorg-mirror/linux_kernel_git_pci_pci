@@ -5285,6 +5285,24 @@ int __pci_reset_function_locked(struct pci_dev *dev)
 EXPORT_SYMBOL_GPL(__pci_reset_function_locked);
 
 /**
+ * pci_reset_function_needs_bridge_lock - check whether a function reset of
+ * @dev may need the upstream bridge to be locked
+ * @dev: PCI device to check
+ *
+ * A bus reset of @dev is done through its upstream bridge, so the caller must
+ * hold the bridge lock. The bridge doesn't need to be locked if there is no
+ * upstream bridge, if bus resets are disabled for @dev, or if @dev is a VF.
+ *
+ * Return: true if a function reset of @dev may be a bus reset.
+ */
+bool pci_reset_function_needs_bridge_lock(struct pci_dev *dev)
+{
+	return pci_upstream_bridge(dev) &&
+	       !(dev->dev_flags & PCI_DEV_FLAGS_NO_BUS_RESET) && !dev->is_virtfn;
+}
+EXPORT_SYMBOL_GPL(pci_reset_function_needs_bridge_lock);
+
+/**
  * pci_init_reset_methods - check whether device can be safely reset
  * and store supported reset mechanisms.
  * @dev: PCI device to check for reset mechanisms
@@ -5341,10 +5359,11 @@ int pci_reset_function(struct pci_dev *dev)
 		return -ENOTTY;
 
 	/*
-	 * If there's no upstream bridge, no locking is needed since there is
-	 * no upstream bridge configuration to hold consistent.
+	 * The upstream bridge only needs to be locked if the reset may be a
+	 * bus reset, which is done through the bridge.
 	 */
-	bridge = pci_upstream_bridge(dev);
+	bridge = pci_reset_function_needs_bridge_lock(dev) ?
+		 pci_upstream_bridge(dev) : NULL;
 
 	/*
 	 * Take the device locks, bridge before device, before blocking
